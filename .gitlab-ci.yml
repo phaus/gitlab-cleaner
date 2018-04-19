@@ -1,11 +1,48 @@
 image: golang:latest
 
 stages:
-    - test
+  - test
+  - build
+  - publish
 
-test-access:
+variables:
+  DOCKER_IMAGE_TAGGED: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA 
+  DOCKER_IMAGE_LATEST: $CI_REGISTRY_IMAGE:latest 
+  REPO_NAME: git-lab.de/$CI_PROJECT_PATH
+
+before_script:
+  - mkdir -p $GOPATH/src/$REPO_NAME
+  - ln -svf $CI_PROJECT_DIR/* $GOPATH/src/$REPO_NAME
+  - cd $GOPATH/src/$REPO_NAME
+  - go get ./...
+
+format:
   stage: test
   script:
-    - echo $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
-    - echo $CI_REGISTRY/repository/$CI_PROJECT_ID/tags?format=json
-    - curl $CI_REGISTRY -u gitlab-ci-token:$CI_JOB_TOKEN -H 'X-Requested-With: XMLHttpRequest' -H 'Connection: keep-alive' 
+    - go fmt $(go list ./... | grep -v /vendor/)
+    - go vet $(go list ./... | grep -v /vendor/)
+    - go test -race $(go list ./... | grep -v /vendor/)
+  tags:
+    - run.consolving.net 
+
+compile:
+  stage: build
+  script:
+    - go build -race -ldflags "-extldflags '-static'" -o $CI_PROJECT_DIR/cleaner
+  artifacts:
+    paths:
+      - cleaner
+  tags:
+    - run.consolving.net 
+
+publish_image:
+  stage: publish
+  image: docker:latest
+  before_script:
+    - echo "NOP - no go here!"
+  script:
+    - docker build -t $DOCKER_IMAGE_TAGGED .
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker push $DOCKER_IMAGE_TAGGED
+  tags:
+    - run.consolving.net 

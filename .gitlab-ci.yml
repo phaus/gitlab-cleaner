@@ -14,6 +14,8 @@ build_image:
     - docker build -t $DOCKER_IMAGE_TAGGED target/docker/stage/
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker push $DOCKER_IMAGE_TAGGED
+  tags:
+    - run.consolving.net 
 
 test-access:
   stage: test

@@ -9,7 +9,13 @@ echo "accessing:"
 #-H "X-Requested-With: XMLHttpRequest" \
 #-H "Accept: application/json, text/plain, */*" --compressed
 
-
-curl '$CI_PROJECT_URL/container_registry.json' \
+echo "via CI_REGISTRY_USER"
+curl $CI_PROJECT_URL/container_registry.json \
 -u $CI_REGISTRY_USER:$CI_REGISTRY_PASSWORD \
+-H 'accept: application/json, text/plain, */*'
+
+
+echo "via PRIVATE_ACCESS_TOKEN"
+curl $CI_PROJECT_URL/container_registry.json \
+-H "Private-Token: $PRIVATE_ACCESS_TOKEN" \
 -H 'accept: application/json, text/plain, */*'

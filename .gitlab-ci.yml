@@ -7,7 +7,7 @@ test-access:
   stage: test
   script:
     - echo $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
-    - echo $CI_REGISTRY/repository/$CI_PROJECT_ID/tags?format=json
+    - curl $CI_PROJECT_URL/registry/repository/$CI_PROJECT_ID/tags?format=json
     - scripts/get.sh
   tags:
     - run.consolving.net 

@@ -38,6 +38,8 @@ compile:
 publish_image:
   stage: publish
   image: docker:latest
+  before_script:
+    - echo "NOP - no go here!"
   script:
     - docker build -t $DOCKER_IMAGE_TAGGED .
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY

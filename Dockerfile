@@ -7,5 +7,5 @@ WORKDIR /scripts
 
 COPY scripts/ /scripts
 
-CMD bash get.sh
+CMD /scripts/get.sh
 

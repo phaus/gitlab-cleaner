@@ -1,27 +1,49 @@
 image: golang:latest
 
 stages:
-    - build
     - test
+    - build
+    - publish
 
 variables:
   DOCKER_IMAGE_TAGGED: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA 
   DOCKER_IMAGE_LATEST: $CI_REGISTRY_IMAGE:latest 
 
+before_script:
+  - mkdir -p $GOPATH/src/$REPO_NAME
+  - ln -svf $CI_PROJECT_DIR/* $GOPATH/src/$REPO_NAME
+  - cd $GOPATH/src/$REPO_NAME
+  - go get ./...
+
+stages:
+    - test
+    - build
+
+format:
+    stage: test
+    script:
+      - go fmt $(go list ./... | grep -v /vendor/)
+      - go vet $(go list ./... | grep -v /vendor/)
+      - go test -race $(go list ./... | grep -v /vendor/)
+  tags:
+    - run.consolving.net 
+
+compile:
+    stage: build
+    script:
+      - go build -race -ldflags "-extldflags '-static'" -o $CI_PROJECT_DIR/cleaner
+    artifacts:
+      paths:
+        - cleaner
+  tags:
+    - run.consolving.net 
+
 build_image:
-  stage: build
+  stage: publish
   image: docker:latest
   script:
     - docker build -t $DOCKER_IMAGE_TAGGED .
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker push $DOCKER_IMAGE_TAGGED
-  tags:
-    - run.consolving.net 
-
-test-access:
-  stage: test
-  script:
-    - echo $CI_REGISTRY -u gitlab-ci-token -p $CI_JOB_TOKEN
-    - scripts/get.sh
   tags:
     - run.consolving.net 

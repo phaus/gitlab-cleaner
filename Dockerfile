@@ -1,8 +1,8 @@
 FROM golang:latest
 
-WORKDIR /scripts
+WORKDIR /app
 
-COPY scripts/ /scripts
+COPY cleaner/ /app
 
-CMD /scripts/get.sh
+CMD /app/cleaner
 

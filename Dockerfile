@@ -4,5 +4,6 @@ WORKDIR /app
 
 COPY cleaner/ /app
 
-CMD /app/cleaner
+ENTRYPOINT ["/app/cleaner"]
 
+CMD ["help"]

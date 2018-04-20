@@ -1,9 +1,11 @@
-FROM golang:latest
+FROM alpine:3.4
 
-WORKDIR /app
+RUN apk add --update ca-certificates openssl
 
-COPY cleaner/ /app
+COPY --from=0 bin/cleaner /usr/local/bin/cleaner
 
-ENTRYPOINT ["/app/cleaner"]
+WORKDIR /
 
-CMD ["help"]
+ENTRYPOINT ["cleaner"]
+
+CMD ["version"]

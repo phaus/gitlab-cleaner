@@ -113,5 +113,5 @@ func getRegistry(client *http.Client) ([]Registry, error) {
 
 func setHeaders(req *http.Request) {
 	req.Header.Add("Private-Token", PrivateToken)
-	req.Header.Add("accept", "application/json, text/plain, */*'")
+	req.Header.Add("accept", "application/json, text/plain, */*")
 }

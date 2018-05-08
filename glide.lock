@@ -1,0 +1,8 @@
+hash: 0e1eb6e7efeff5fa848f7b24fe23c58d266395960189b9b7cd8004f95331ec23
+updated: 2018-05-08T17:22:24.947531+02:00
+imports:
+- name: github.com/spf13/cobra
+  version: a1f051bc3eba734da4772d60e2d677f47cf93ef4
+  subpackages:
+  - cobra
+testImports: []

@@ -1,3 +1,5 @@
+/vendor
 /cleaner
+/bin/cleaner
 /dist
 /.vscode

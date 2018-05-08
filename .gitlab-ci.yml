@@ -1,4 +1,4 @@
-image: lwolf/golang-glide
+image: fabiorphp/golang-glide
 
 stages:
   - test

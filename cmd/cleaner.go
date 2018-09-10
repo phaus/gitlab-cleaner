@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"encoding/json"
@@ -6,18 +6,11 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"net/url"
-	"os"
+
+	"github.com/spf13/viper"
+
+	"github.com/spf13/cobra"
 )
-
-// ProjectURL url of the gitlab project
-var ProjectURL string
-
-// BaseURL the base url of the gitlab installation
-var BaseURL string
-
-// PrivateToken the private access token for the gitlab api
-var PrivateToken string
 
 // Registry a gitlab Registry info object
 type Registry struct {
@@ -39,40 +32,36 @@ type RegistryTag struct {
 	DestroyPath   string `json:"destroy_path"`
 }
 
-func main() {
-	ProjectURL = os.Getenv("CI_PROJECT_URL")
-	PrivateToken = os.Getenv("PRIVATE_ACCESS_TOKEN")
+func init() {
+	rootCmd.AddCommand(cleanerCmd)
+}
 
-	client := &http.Client{}
+var cleanerCmd = &cobra.Command{
+	Use:   "cleaner",
+	Short: "clean the gitlab registry.",
+	Long:  `This cleans a gitlab Registry. You need to set 'CI_PROJECT_URL' and 'PRIVATE_ACCESS_TOKEN'`,
+	Run: func(cmd *cobra.Command, args []string) {
 
-	u, err := url.Parse(ProjectURL)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	BaseURL = fmt.Sprintf("%s://%s", u.Scheme, u.Host)
-
-	fmt.Printf("calling %s on BaseURL %s", ProjectURL, BaseURL)
-
-	registries, err := getRegistry(client)
-	if err != nil {
-		log.Fatal(err)
-	}
-	for _, registry := range registries {
-		fmt.Printf("\n%v*\n", registry)
-		registryTags, err := getTags(client, registry)
+		registries, err := getRegistry(GetClient())
 		if err != nil {
 			log.Fatal(err)
 		}
-		for _, registryTag := range registryTags {
-			fmt.Printf("\n%v*\n", registryTag)
+		for _, registry := range registries {
+			fmt.Printf("\n%v*\n", registry)
+			registryTags, err := getTags(GetClient(), registry)
+			if err != nil {
+				log.Fatal(err)
+			}
+			for _, registryTag := range registryTags {
+				fmt.Printf("\n%v*\n", registryTag)
+			}
 		}
-	}
+	},
 }
 
 func getTags(client *http.Client, registry Registry) ([]RegistryTag, error) {
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s%s", BaseURL, registry.TagsPath), nil)
-	setHeaders(req)
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s%s", viper.GetString("BaseUrl"), registry.TagsPath), nil)
+	SetDefaultHeaders(req)
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
@@ -91,8 +80,8 @@ func getTags(client *http.Client, registry Registry) ([]RegistryTag, error) {
 }
 
 func getRegistry(client *http.Client) ([]Registry, error) {
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s/container_registry.json", ProjectURL), nil)
-	setHeaders(req)
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/container_registry.json", viper.GetString("ProjectUrl")), nil)
+	SetDefaultHeaders(req)
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
@@ -109,9 +98,4 @@ func getRegistry(client *http.Client) ([]Registry, error) {
 		log.Fatal(err)
 	}
 	return registries, nil
-}
-
-func setHeaders(req *http.Request) {
-	req.Header.Add("Private-Token", PrivateToken)
-	req.Header.Add("accept", "application/json, text/plain, */*")
 }

@@ -4,3 +4,5 @@ import:
   version: ~0.0.2
   subpackages:
   - cobra
+- package: github.com/spf13/viper
+  version: v1.2.0

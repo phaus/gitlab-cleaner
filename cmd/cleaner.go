@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/spf13/viper"
 
@@ -66,13 +67,43 @@ func getTags(client *http.Client, registry Registry) ([]RegistryTag, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	totalPages, err := strconv.Atoi(resp.Header.Get("x-total-pages"))
 	if err != nil {
 		return nil, err
 	}
+	totalCount, err := strconv.Atoi(resp.Header.Get("x-total"))
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var registryTags = make([]RegistryTag, 0)
+	for page := 1; page <= totalPages; page++ {
+		fmt.Printf("requesting %s%s&page=%d\n", viper.GetString("BaseUrl"), registry.TagsPath, page)
+		req, err := http.NewRequest("GET", fmt.Sprintf("%s%s&page=%d", viper.GetString("BaseUrl"), registry.TagsPath, page), nil)
+		SetDefaultHeaders(req)
+		resp, err := client.Do(req)
+		if err != nil {
+			return nil, err
+		}
+		defer resp.Body.Close()
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return nil, err
+		}
+		innerTags, err := parseTags(body)
+		if err != nil {
+			return nil, err
+		}
+		registryTags = append(registryTags, innerTags...)
+	}
+	fmt.Printf("%d vs %d", totalCount, len(registryTags))
+	return registryTags, nil
+}
+
+func parseTags(body []byte) ([]RegistryTag, error) {
 	var registryTags []RegistryTag
-	err = json.Unmarshal(body, &registryTags)
+	var err = json.Unmarshal(body, &registryTags)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -13,6 +13,8 @@ variables:
 before_script:
   - mkdir -p $GOPATH/src/$REPO_NAME
   - ln -svf $CI_PROJECT_DIR/* $GOPATH/src/$REPO_NAME
+  - mkdir -p $GOPATH/src/github.com/phaus/registry-cleaner
+  - ln -svf $CI_PROJECT_DIR/* $GOPATH/src/github.com/phaus/registry-cleaner
   - cd $GOPATH/src/$REPO_NAME
   - glide install
   - go get ./...

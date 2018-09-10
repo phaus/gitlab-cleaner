@@ -6,3 +6,4 @@ import:
   - cobra
 - package: github.com/spf13/viper
   version: v1.2.0
+- package: github.com/phaus/registry-cleaner

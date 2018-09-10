@@ -15,3 +15,5 @@ In `$GOPATH/src/github.com/phaus` create a Softlink to your local copy (e.g. `ln
 
 Install `direnv`. Copy and modify `.envrc.example` to `.envrc` matching to your gitlab project configuration.
 Run `direnv allow .` in your current folder. Your ENV Variables should now be injected, everytime you enter that folder.
+
+Install `jq`. Run the Script `scripts/get.sh` to test your setup.

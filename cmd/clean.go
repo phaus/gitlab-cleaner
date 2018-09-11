@@ -6,16 +6,21 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"sort"
 	"strconv"
+	"time"
 
+	"github.com/phaus/registry-cleaner/utils"
 	"github.com/spf13/viper"
 
 	"github.com/spf13/cobra"
+
+	"github.com/dustin/go-humanize"
 )
 
 // Registry a gitlab Registry info object
 type Registry struct {
-	ID          int64  `json:"id"`
+	ID          uint64 `json:"id"`
 	Path        string `json:"path"`
 	Location    string `json:"location"`
 	TagsPath    string `json:"tags_path"`
@@ -28,7 +33,7 @@ type RegistryTag struct {
 	Location      string `json:"location"`
 	Revision      string `json:"revision"`
 	ShortRevision string `json:"short_revision"`
-	TotalSize     int64  `json:"total_size"`
+	TotalSize     uint64 `json:"total_size"`
 	CreatedAt     string `json:"created_at"`
 	DestroyPath   string `json:"destroy_path"`
 }
@@ -38,9 +43,9 @@ func init() {
 }
 
 var cleanerCmd = &cobra.Command{
-	Use:   "cleaner",
+	Use:   "clean",
 	Short: "clean the gitlab registry.",
-	Long:  `This cleans a gitlab Registry. You need to set 'CI_PROJECT_URL' and 'PRIVATE_ACCESS_TOKEN'`,
+	Long:  `This cleans a gitlab Registry.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		registries, err := getRegistry(GetClient())
@@ -53,14 +58,15 @@ var cleanerCmd = &cobra.Command{
 			if err != nil {
 				log.Fatal(err)
 			}
-			for _, registryTag := range registryTags {
-				fmt.Printf("\n%v*\n", registryTag)
-			}
+			fmt.Printf("%d Packages have used %s in %v\n",
+				len(registryTags),
+				humanize.Bytes(countTotalSize(registryTags)),
+				calculateDuration(registryTags))
 		}
 	},
 }
 
-func getTags(client *http.Client, registry Registry) ([]RegistryTag, error) {
+func getTags(client *http.Client, registry Registry) (map[time.Time]RegistryTag, error) {
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s%s", viper.GetString("BaseUrl"), registry.TagsPath), nil)
 	SetDefaultHeaders(req)
 	resp, err := client.Do(req)
@@ -77,7 +83,10 @@ func getTags(client *http.Client, registry Registry) ([]RegistryTag, error) {
 	}
 	defer resp.Body.Close()
 
-	var registryTags = make([]RegistryTag, 0)
+	fmt.Printf("total Pages: %d\ntotal Count: %d\n", totalPages, totalCount)
+
+	var registryTags = make(map[time.Time]RegistryTag)
+
 	for page := 1; page <= totalPages; page++ {
 		fmt.Printf("requesting %s%s&page=%d\n", viper.GetString("BaseUrl"), registry.TagsPath, page)
 		req, err := http.NewRequest("GET", fmt.Sprintf("%s%s&page=%d", viper.GetString("BaseUrl"), registry.TagsPath, page), nil)
@@ -91,23 +100,25 @@ func getTags(client *http.Client, registry Registry) ([]RegistryTag, error) {
 		if err != nil {
 			return nil, err
 		}
-		innerTags, err := parseTags(body)
+		err = parseTags(body, registryTags)
 		if err != nil {
 			return nil, err
 		}
-		registryTags = append(registryTags, innerTags...)
 	}
-	fmt.Printf("%d vs %d", totalCount, len(registryTags))
 	return registryTags, nil
 }
 
-func parseTags(body []byte) ([]RegistryTag, error) {
-	var registryTags []RegistryTag
-	var err = json.Unmarshal(body, &registryTags)
+func parseTags(body []byte, registryTags map[time.Time]RegistryTag) error {
+	var innerTags []RegistryTag
+	var err = json.Unmarshal(body, &innerTags)
 	if err != nil {
 		log.Fatal(err)
 	}
-	return registryTags, nil
+	for _, registryTag := range innerTags {
+		t := utils.ParseTime(registryTag.CreatedAt)
+		registryTags[t] = registryTag
+	}
+	return nil
 }
 
 func getRegistry(client *http.Client) ([]Registry, error) {
@@ -129,4 +140,23 @@ func getRegistry(client *http.Client) ([]Registry, error) {
 		log.Fatal(err)
 	}
 	return registries, nil
+}
+
+func countTotalSize(registryTags map[time.Time]RegistryTag) uint64 {
+	var count uint64
+	for _, registryTag := range registryTags {
+		count = count + registryTag.TotalSize
+	}
+	return count
+}
+
+func calculateDuration(registryTags map[time.Time]RegistryTag) time.Duration {
+	var keys []string
+	for _, v := range registryTags {
+		keys = append(keys, v.CreatedAt)
+	}
+	sort.Strings(keys)
+	start := utils.ParseTime(keys[0])
+	end := utils.ParseTime(keys[len(keys)-1])
+	return end.Sub(start)
 }

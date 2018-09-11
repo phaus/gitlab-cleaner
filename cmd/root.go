@@ -13,9 +13,9 @@ import (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "collector",
+	Use:   "cleaner",
 	Short: "A brief description of your application",
-	Long:  `…more text`,
+	Long:  `This Application cleans the Gitlab Registry based on some simple rules.`,
 	Run: func(cmd *cobra.Command, args []string) {
 	},
 }
@@ -35,6 +35,13 @@ func init() {
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
+
+	_, hasToken := os.LookupEnv("PRIVATE_ACCESS_TOKEN")
+	_, hasURL := os.LookupEnv("CI_PROJECT_URL")
+	if !hasToken || !hasURL {
+		log.Fatal("You need to set 'CI_PROJECT_URL' and 'PRIVATE_ACCESS_TOKEN'")
+	}
+
 	viper.Set("Token", os.Getenv("PRIVATE_ACCESS_TOKEN"))
 	viper.Set("ProjectUrl", os.Getenv("CI_PROJECT_URL"))
 
@@ -45,7 +52,7 @@ func initConfig() {
 
 	viper.Set("BaseUrl", fmt.Sprintf("%s://%s", u.Scheme, u.Host))
 
-	fmt.Printf("calling\nProjectUrl %s\nBaseUrl %s\n", viper.GetString("ProjectUrl"), viper.GetString("BaseUrl"))
+	fmt.Printf("\nProjectUrl %s\nBaseUrl %s\n\n", viper.GetString("ProjectUrl"), viper.GetString("BaseUrl"))
 }
 
 // GetClient - returns the default HTTP Client

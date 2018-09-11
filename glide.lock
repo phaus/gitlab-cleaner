@@ -1,6 +1,12 @@
-hash: fd9f2b4d2d51050a42f7002c66512f4f96791574694bf755a8bbe914420f4ca3
-updated: 2018-09-11T00:53:43.97186+02:00
+hash: 7f37a6fa85cc9be2ea6103276b5c4ee96978f6650059a87aa7286fd244bfe55c
+updated: 2018-09-11T02:32:31.920619+02:00
 imports:
+- name: github.com/dustin/go-humanize
+  version: 9f541cc9db5d55bce703bd99987c9d5cb8eea45e
+- name: github.com/rickb777/date
+  version: ee30139c88e657c21e64e98ec536029f6fe1f50c
+  subpackages:
+  - period
 - name: github.com/spf13/cobra
   version: ef82de70bb3f60c65fb8eebacbb2d122ef517385
   subpackages:

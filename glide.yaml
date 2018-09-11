@@ -6,3 +6,8 @@ import:
   - cobra
 - package: github.com/spf13/viper
   version: v1.2.0
+- package: github.com/dustin/go-humanize
+- package: github.com/rickb777/date
+  version: v1.6.0
+  subpackages:
+  - period

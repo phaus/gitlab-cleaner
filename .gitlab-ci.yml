@@ -64,6 +64,6 @@ test_image:
   stage: test
   image: $DOCKER_IMAGE_TAGGED
   script:
-    - test
+    - cleaner test
   tags:
     - run.consolving.net  

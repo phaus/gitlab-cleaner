@@ -4,6 +4,7 @@ stages:
   - test
   - build
   - publish
+  - test
 
 variables:
   DOCKER_IMAGE_TAGGED: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA 
@@ -26,7 +27,7 @@ format:
     - go vet $(go list ./... | grep -v /vendor/)
     - go test -race $(go list ./... | grep -v /vendor/)
   tags:
-    - run.consolving.net 
+    - run.consolving.net
 
 compile:
   stage: build
@@ -36,16 +37,22 @@ compile:
     paths:
       - bin/cleaner
   tags:
-    - run.consolving.net 
+    - run.consolving.net
 
 publish_image:
   stage: publish
   image: docker:latest
-  before_script:
-    - echo "NOP - no go here!"
   script:
     - docker build -t $DOCKER_IMAGE_TAGGED .
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker push $DOCKER_IMAGE_TAGGED
   tags:
-    - run.consolving.net 
+    - run.consolving.net
+
+test_image:
+  stage: test
+  image: $DOCKER_IMAGE_TAGGED
+  script:
+    - test
+  tags:
+    - run.consolving.net  

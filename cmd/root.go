@@ -52,7 +52,7 @@ func initConfig() {
 
 	viper.Set("BaseUrl", fmt.Sprintf("%s://%s", u.Scheme, u.Host))
 
-	fmt.Printf("\nProjectUrl %s\nBaseUrl %s\n\n", viper.GetString("ProjectUrl"), viper.GetString("BaseUrl"))
+	fmt.Printf("ProjectUrl %s\nBaseUrl %s\n", viper.GetString("ProjectUrl"), viper.GetString("BaseUrl"))
 }
 
 // GetClient - returns the default HTTP Client

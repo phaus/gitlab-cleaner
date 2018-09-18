@@ -43,17 +43,15 @@ func init() {
 }
 
 var cleanerCmd = &cobra.Command{
-	Use:   "clean",
-	Short: "clean the gitlab registry.",
-	Long:  `This cleans a gitlab Registry.`,
+	Use:   "test",
+	Short: "test the gitlab registry.",
+	Long:  `This tests a gitlab Registry.`,
 	Run: func(cmd *cobra.Command, args []string) {
-
 		registries, err := getRegistry(GetClient())
 		if err != nil {
 			log.Fatal(err)
 		}
 		for _, registry := range registries {
-			fmt.Printf("\n%v*\n", registry)
 			registryTags, err := getTags(GetClient(), registry)
 			if err != nil {
 				log.Fatal(err)
@@ -88,7 +86,6 @@ func getTags(client *http.Client, registry Registry) (map[time.Time]RegistryTag,
 	var registryTags = make(map[time.Time]RegistryTag)
 
 	for page := 1; page <= totalPages; page++ {
-		fmt.Printf("requesting %s%s&page=%d\n", viper.GetString("BaseUrl"), registry.TagsPath, page)
 		req, err := http.NewRequest("GET", fmt.Sprintf("%s%s&page=%d", viper.GetString("BaseUrl"), registry.TagsPath, page), nil)
 		SetDefaultHeaders(req)
 		resp, err := client.Do(req)

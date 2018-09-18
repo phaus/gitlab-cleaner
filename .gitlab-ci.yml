@@ -11,17 +11,17 @@ variables:
   DOCKER_IMAGE_LATEST: $CI_REGISTRY_IMAGE:latest 
   REPO_NAME: git-lab.de/$CI_PROJECT_PATH
 
-before_script:
-  - mkdir -p $GOPATH/src/$REPO_NAME
-  - ln -svf $CI_PROJECT_DIR/* $GOPATH/src/$REPO_NAME
-  - mkdir -p $GOPATH/src/github.com/phaus/registry-cleaner
-  - ln -svf $CI_PROJECT_DIR/* $GOPATH/src/github.com/phaus/registry-cleaner
-  - cd $GOPATH/src/$REPO_NAME
-  - glide install
-  - go get ./...
-
 format:
   stage: prepare
+  before_script:
+    - apk add git
+    - mkdir -p $GOPATH/src/$REPO_NAME
+    - ln -svf $CI_PROJECT_DIR/* $GOPATH/src/$REPO_NAME
+    - mkdir -p $GOPATH/src/github.com/phaus/registry-cleaner
+    - ln -svf $CI_PROJECT_DIR/* $GOPATH/src/github.com/phaus/registry-cleaner
+    - cd $GOPATH/src/$REPO_NAME
+    - glide install
+    - go get ./...
   script:
     - go fmt $(go list ./... | grep -v /vendor/)
     - go vet $(go list ./... | grep -v /vendor/)
@@ -31,6 +31,15 @@ format:
 
 compile:
   stage: build
+  before_script:
+    - apk add git
+    - mkdir -p $GOPATH/src/$REPO_NAME
+    - ln -svf $CI_PROJECT_DIR/* $GOPATH/src/$REPO_NAME
+    - mkdir -p $GOPATH/src/github.com/phaus/registry-cleaner
+    - ln -svf $CI_PROJECT_DIR/* $GOPATH/src/github.com/phaus/registry-cleaner
+    - cd $GOPATH/src/$REPO_NAME
+    - glide install
+    - go get ./...
   script:
     - go build -race -ldflags "-extldflags '-static'" -o $CI_PROJECT_DIR/bin/cleaner
   artifacts:
@@ -46,6 +55,9 @@ publish_image:
     - docker build -t $DOCKER_IMAGE_TAGGED .
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker push $DOCKER_IMAGE_TAGGED
+  dependencies:
+    - compile
+  when: on_success
   tags:
     - run.consolving.net
 

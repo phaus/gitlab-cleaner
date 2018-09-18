@@ -1,6 +1,7 @@
 image: phaus/docker-golang-build:1.11-alpine
 
 stages:
+  - prepare
   - build
   - publish
   - test
@@ -9,6 +10,23 @@ variables:
   DOCKER_IMAGE_TAGGED: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA 
   DOCKER_IMAGE_LATEST: $CI_REGISTRY_IMAGE:latest 
   REPO_NAME: git-lab.de/$CI_PROJECT_PATH
+
+format:
+  stage: prepare
+  before_script:
+    - mkdir -p $GOPATH/src/$REPO_NAME
+    - ln -svf $CI_PROJECT_DIR/* $GOPATH/src/$REPO_NAME
+    - mkdir -p $GOPATH/src/github.com/phaus/registry-cleaner
+    - ln -svf $CI_PROJECT_DIR/* $GOPATH/src/github.com/phaus/registry-cleaner
+    - cd $GOPATH/src/$REPO_NAME
+    - glide install
+    - go get ./...
+  script:
+    - go fmt $(go list ./... | grep -v /vendor/)
+    - go vet $(go list ./... | grep -v /vendor/)
+    - go test -race $(go list ./... | grep -v /vendor/)
+  tags:
+    - run.consolving.net
 
 compile:
   stage: build

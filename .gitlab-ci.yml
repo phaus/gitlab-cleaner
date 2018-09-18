@@ -1,4 +1,4 @@
-image: fabiorphp/golang-glide
+image: phaus/golang-glide:1.11-alpine
 
 stages:
   - prepare

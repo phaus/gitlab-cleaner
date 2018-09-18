@@ -39,7 +39,8 @@ compile:
     - glide install
     - go get ./...
   script:
-    - go build -race -ldflags "-extldflags '-static'" -o $CI_PROJECT_DIR/bin/cleaner
+    - go build -ldflags "-extldflags '-static'" -o $CI_PROJECT_DIR/bin/cleaner
+#    - go build -race -ldflags "-extldflags '-static'" -o $CI_PROJECT_DIR/bin/cleaner
   artifacts:
     paths:
       - bin/cleaner

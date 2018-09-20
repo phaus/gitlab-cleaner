@@ -16,4 +16,4 @@ ENV PATH=/app:$PATH
 
 WORKDIR /app
 
-CMD ["cleaner"] 
+CMD ["/app/cleaner"] 

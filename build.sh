@@ -2,4 +2,5 @@
 
 glide install
 go get ./...
-go build -race -ldflags "-extldflags '-static'" -o bin/cleaner
+GOOS=linux go build -ldflags "-extldflags '-static'" -o bin/cleaner
+go build -race -ldflags "-extldflags '-static'" -o bin/cleaner-darwin

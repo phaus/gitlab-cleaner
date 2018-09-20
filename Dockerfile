@@ -1,11 +1,17 @@
 FROM alpine:3.4
 
+LABEL maintainer=philipp@haussleiter.de
+
+USER root
+
 RUN apk add --update ca-certificates openssl
 
-COPY bin/cleaner /bin/cleaner
+COPY bin/cleaner /app/cleaner
 
-RUN chmod +x /bin/cleaner
+RUN chmod 0755 /app/cleaner
 
-ENTRYPOINT ["/bin"]
+RUN ["chmod", "+x", "/app/cleaner"]
 
-CMD []
+ENV PATH=/app:$PATH
+
+WORKDIR /app

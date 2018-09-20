@@ -30,6 +30,7 @@ format:
 
 compile:
   stage: build
+  image: phaus/gobelt:latest
   before_script:
     - mkdir -p $GOPATH/src/$REPO_NAME
     - ln -svf $CI_PROJECT_DIR/* $GOPATH/src/$REPO_NAME
@@ -40,7 +41,7 @@ compile:
     - go get ./...
   script:
     - go build -ldflags "-extldflags '-static'" -o $CI_PROJECT_DIR/bin/cleaner
-#    - go build -race -ldflags "-extldflags '-static'" -o $CI_PROJECT_DIR/bin/cleaner
+    - upx $CI_PROJECT_DIR/bin/cleaner
   artifacts:
     paths:
       - bin/cleaner

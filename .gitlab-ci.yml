@@ -65,6 +65,7 @@ test_image:
   stage: test
   image: dind:latest
   script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker run $DOCKER_IMAGE_TAGGED cleaner test
   tags:
     - run.consolving.net  

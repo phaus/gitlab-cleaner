@@ -6,12 +6,14 @@ USER root
 
 RUN apk add --update ca-certificates openssl
 
-COPY bin/cleaner /cleaner
+COPY bin/cleaner /app/cleaner
 
-RUN chmod 0755 /cleaner
+RUN chmod 0755 /app/cleaner
 
-RUN ["chmod", "+x", "/cleaner"]
+RUN ["chmod", "-R", "+x", "/app"]
 
-WORKDIR /
+ENV PATH=/app:$PATH
 
-CMD ["/cleaner"] 
+WORKDIR /app
+
+CMD ["cleaner"] 

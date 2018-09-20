@@ -63,8 +63,8 @@ publish_image:
 
 test_image:
   stage: test
-  image: $DOCKER_IMAGE_TAGGED
+  image: dind:latest
   script:
-    - cleaner test
+    - docker run $DOCKER_IMAGE_TAGGED cleaner test
   tags:
     - run.consolving.net  

@@ -15,3 +15,5 @@ RUN ["chmod", "+x", "/app/cleaner"]
 ENV PATH=/app:$PATH
 
 WORKDIR /app
+
+CMD ["/app/cleaner"] 

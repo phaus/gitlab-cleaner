@@ -63,9 +63,8 @@ publish_image:
 
 test_image:
   stage: test
-  image: docker:latest
+  image: $DOCKER_IMAGE_TAGGED
   script:
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker run $DOCKER_IMAGE_TAGGED cleaner test
+    - cleaner test
   tags:
     - run.consolving.net  

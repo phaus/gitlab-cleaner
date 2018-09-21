@@ -15,12 +15,6 @@ if [ "${1#-}" != "$1" ]; then
     set -- cleaner "$@"
 fi
 
-# if our command is a valid Docker subcommand, let's invoke it through Docker instead
-# (this allows for "docker run docker ps", etc)
-if cleaner help "$1" > /dev/null 2>&1; then
-    set -- cleaner "$@"
-fi
-
 printf '%s\n' "$@"
 
 exec "$@"

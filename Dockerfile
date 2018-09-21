@@ -1,19 +1,19 @@
-FROM alpine:3.4
+FROM alpine:3.8
 
 LABEL maintainer=philipp@haussleiter.de
 
 USER root
 
-RUN apk add --update ca-certificates openssl
+RUN apk add --update --no-cache ca-certificates
 
-COPY bin/cleaner /app/cleaner
+COPY bin/cleaner /usr/local/bin/cleaner
 
-RUN chmod 0755 /app/cleaner
+RUN chmod 0755 /usr/local/bin/cleaner
 
-RUN ["chmod", "-R", "+x", "/app"]
+RUN ["chmod", "-R", "+x", "/usr/local/bin/"]
 
-ENV PATH=/app:$PATH
+COPY cleaner-entrypoint.sh /usr/local/bin/
 
-WORKDIR /app
+ENTRYPOINT ["cleaner-entrypoint.sh"]
 
-CMD ["/app/cleaner"] 
+CMD ["sh"]

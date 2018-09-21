@@ -1,7 +1,6 @@
 /vendor
 /cleaner
-/bin/cleaner
+/bin
 /dist
 /.vscode
 /.envrc
-bin/cleaner-mac

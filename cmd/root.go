@@ -51,8 +51,11 @@ func initConfig() {
 	}
 
 	viper.Set("BaseUrl", fmt.Sprintf("%s://%s", u.Scheme, u.Host))
+	viper.Set("RegistryUrl", fmt.Sprintf("%s/container_registry.json", viper.GetString("ProjectUrl")))
 
-	fmt.Printf("ProjectUrl %s\nBaseUrl %s\n", viper.GetString("ProjectUrl"), viper.GetString("BaseUrl"))
+	fmt.Printf("BaseUrl %s\n", viper.GetString("BaseUrl"))
+	fmt.Printf("ProjectUrl %s\n", viper.GetString("ProjectUrl"))
+	fmt.Printf("RegistryUrl %s\n", viper.GetString("RegistryUrl"))
 }
 
 // GetClient - returns the default HTTP Client

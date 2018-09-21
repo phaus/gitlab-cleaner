@@ -56,7 +56,7 @@ var cleanerCmd = &cobra.Command{
 			if err != nil {
 				log.Fatal(err)
 			}
-			fmt.Printf("%d Packages have used %s in %v\n",
+			fmt.Printf("%d Image have been created %s during %v\n",
 				len(registryTags),
 				humanize.Bytes(countTotalSize(registryTags)),
 				calculateDuration(registryTags))
@@ -81,7 +81,7 @@ func getTags(client *http.Client, registry Registry) (map[time.Time]RegistryTag,
 	}
 	defer resp.Body.Close()
 
-	fmt.Printf("total Pages: %d\ntotal Count: %d\n", totalPages, totalCount)
+	fmt.Printf("%d Images on %d pages.\n", totalCount, totalPages)
 
 	var registryTags = make(map[time.Time]RegistryTag)
 
@@ -119,7 +119,7 @@ func parseTags(body []byte, registryTags map[time.Time]RegistryTag) error {
 }
 
 func getRegistry(client *http.Client) ([]Registry, error) {
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s/container_registry.json", viper.GetString("ProjectUrl")), nil)
+	req, err := http.NewRequest("GET", viper.GetString("RegistryUrl"), nil)
 	SetDefaultHeaders(req)
 	resp, err := client.Do(req)
 	if err != nil {

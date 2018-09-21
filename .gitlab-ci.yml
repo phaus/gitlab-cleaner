@@ -40,7 +40,7 @@ compile:
     - go get ./...
   script:
     - go build -ldflags "-extldflags '-static'" -o $CI_PROJECT_DIR/bin/cleaner
-    - upx $CI_PROJECT_DIR/bin/cleaner
+#    - upx $CI_PROJECT_DIR/bin/cleaner
   artifacts:
     paths:
       - bin/cleaner

@@ -6,6 +6,8 @@ USER root
 
 RUN apk add --update --no-cache ca-certificates
 
+RUN [ ! -e /etc/nsswitch.conf ] && echo 'hosts: files dns' > /etc/nsswitch.conf
+
 COPY bin/cleaner /usr/local/bin/cleaner
 
 RUN chmod 0755 /usr/local/bin/cleaner

@@ -18,4 +18,4 @@ COPY cleaner-entrypoint.sh /usr/local/bin/
 
 ENTRYPOINT ["cleaner-entrypoint.sh"]
 
-CMD []
+CMD ["/bin/sh"]

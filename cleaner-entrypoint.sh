@@ -7,6 +7,8 @@ if [[ $# -eq 0 ]] ; then
     exit 0
 fi
 
+   cleaner --help
+
 printf '%s\n' "$@"
 
 exec "$@"

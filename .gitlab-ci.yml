@@ -24,7 +24,6 @@ format:
   script:
     - go fmt $(go list ./... | grep -v /vendor/)
     - go vet $(go list ./... | grep -v /vendor/)
-#    - go test -race $(go list ./... | grep -v /vendor/)
   tags:
     - run.consolving.net
 
@@ -65,6 +64,7 @@ test_image:
   stage: test
   image: $DOCKER_IMAGE_TAGGED
   script:
+    - cleaner
     - cleaner test
   tags:
     - run.consolving.net  

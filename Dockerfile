@@ -16,6 +16,6 @@ RUN ["chmod", "-R", "+x", "/usr/local/bin/"]
 
 COPY cleaner-entrypoint.sh /usr/local/bin/
 
-ENTRYPOINT ["cleaner"]
+ENTRYPOINT ["cleaner-entrypoint.sh"]
 
-CMD ["--help"]
+CMD ["sh"]

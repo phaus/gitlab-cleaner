@@ -2,6 +2,9 @@
 
 set -e
 
+echo "Test!"
+which cleaner
+
 if [[ $# -eq 0 ]] ; then
     cleaner --help
     exit 0
@@ -17,5 +20,7 @@ fi
 if cleaner help "$1" > /dev/null 2>&1; then
     set -- cleaner "$@"
 fi
+
+printf '%s\n' "$@"
 
 exec "$@"

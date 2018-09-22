@@ -2,6 +2,8 @@
 
 set -e
 
+which cleaner
+
 PATH=/usr/local/bin/:$PATH
 
 if [[ $# -eq 0 ]] ; then

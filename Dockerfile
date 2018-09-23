@@ -1,11 +1,11 @@
 FROM phaus/gobelt:latest
 
-RUN mkdir -p $GOPATH/src/github.com/phaus/registry-cleaner /dist
+RUN mkdir -p $GOPATH/src/github.com/phaus/gitlab-cleaner /dist
 
-WORKDIR $GOPATH/src/github.com/phaus/registry-cleaner
-COPY . $GOPATH/src/github.com/phaus/registry-cleaner
+WORKDIR $GOPATH/src/github.com/phaus/gitlab-cleaner
+COPY . $GOPATH/src/github.com/phaus/gitlab-cleaner
 
-RUN cd $GOPATH/src/github.com/phaus/registry-cleaner && \
+RUN cd $GOPATH/src/github.com/phaus/gitlab-cleaner && \
     glide install && \
     go get ./... && \
     go fmt $(go list ./... | grep -v /vendor/) && \

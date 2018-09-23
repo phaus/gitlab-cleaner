@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/phaus/registry-cleaner/utils"
+	"github.com/phaus/gitlab-cleaner/utils"
 	"github.com/spf13/viper"
 
 	"github.com/spf13/cobra"

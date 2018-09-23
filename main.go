@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/phaus/registry-cleaner/cmd"
+	"github.com/phaus/gitlab-cleaner/cmd"
 )
 
 func main() {

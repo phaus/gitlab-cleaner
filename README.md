@@ -9,7 +9,7 @@ Install glide follwing the instructions here https://github.com/Masterminds/glid
     glide install
 
 For the development setup, you have to connect your local copy to the Golang Dependency System.
-In `$GOPATH/src/github.com/phaus` create a Softlink to your local copy (e.g. `ln -s /Users/philipp/GIT/go/registry-cleaner`).
+In `$GOPATH/src/github.com/phaus` create a Softlink to your local copy (e.g. `ln -s /Users/philipp/GIT/go/gitlab-claner`).
 
 ### Optional
 

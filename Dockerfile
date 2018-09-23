@@ -1,21 +1,33 @@
-FROM alpine:3.8
+FROM phaus/gobelt:latest
 
-LABEL maintainer=philipp@haussleiter.de
+RUN mkdir -p $GOPATH/src/github.com/phaus/registry-cleaner /dist
+
+WORKDIR $GOPATH/src/github.com/phaus/registry-cleaner
+COPY . $GOPATH/src/github.com/phaus/registry-cleaner
+
+RUN cd $GOPATH/src/github.com/phaus/registry-cleaner && \
+    glide install && \
+    go get ./... && \
+    go fmt $(go list ./... | grep -v /vendor/) && \
+    go vet $(go list ./... | grep -v /vendor/)
+
+RUN go build -o /dist/cleaner 
+
+FROM golang:1.11.0-stretch
 
 USER root
 
-RUN apk add --update --no-cache ca-certificates
+LABEL maintainer=philipp@haussleiter.de
 
-RUN [ ! -e /etc/nsswitch.conf ] && echo 'hosts: files dns' > /etc/nsswitch.conf
+RUN mkdir -p /app && \
+    apt-get update -y  && apt-get upgrade -y && \
+    apt-get autoremove -y && \
+    rm -rf /var/lib/apt/lists/*
 
-COPY bin/cleaner /usr/local/bin/cleaner
+COPY --from=0 /dist/cleaner /app/cleaner
 
-RUN chmod 0755 /usr/local/bin/cleaner
+ENV PATH=/app:$PATH
 
-RUN ["chmod", "-R", "+x", "/usr/local/bin/"]
+WORKDIR /app
 
-COPY cleaner-entrypoint.sh /usr/local/bin/
-
-ENTRYPOINT ["cleaner-entrypoint.sh"]
-
-CMD ["sh"]
+CMD ["/app/cleaner"]

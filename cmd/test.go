@@ -39,10 +39,10 @@ type RegistryTag struct {
 }
 
 func init() {
-	rootCmd.AddCommand(cleanerCmd)
+	rootCmd.AddCommand(testCmd)
 }
 
-var cleanerCmd = &cobra.Command{
+var testCmd = &cobra.Command{
 	Use:   "test",
 	Short: "test the gitlab registry.",
 	Long:  `This tests a gitlab Registry.`,

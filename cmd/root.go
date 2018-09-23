@@ -13,7 +13,7 @@ import (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "cleaner",
+	Use:   "root",
 	Short: "A brief description of your application",
 	Long:  `This Application cleans the Gitlab Registry based on some simple rules.`,
 	Run: func(cmd *cobra.Command, args []string) {

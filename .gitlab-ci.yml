@@ -1,10 +1,9 @@
 image: phaus/docker-golang-build:1.11-alpine
 
 stages:
-  - prepare
   - build
-  - publish
   - test
+  - publish
 
 variables:
   DOCKER_IMAGE_TAGGED: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA 
@@ -18,9 +17,6 @@ build_image:
     - docker build -t $DOCKER_IMAGE_TAGGED .
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker push $DOCKER_IMAGE_TAGGED
-  dependencies:
-    - compile
-  when: on_success
   tags:
     - run.consolving.net
 

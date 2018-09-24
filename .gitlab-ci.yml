@@ -26,5 +26,6 @@ test_image:
   script:
     - cleaner
     - cleaner test
+    - cleaner list
   tags:
     - run.consolving.net  

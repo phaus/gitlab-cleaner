@@ -1,5 +1,5 @@
 hash: 7f37a6fa85cc9be2ea6103276b5c4ee96978f6650059a87aa7286fd244bfe55c
-updated: 2018-09-18T23:30:28.577494+02:00
+updated: 2018-09-24T01:01:21.534291+02:00
 imports:
 - name: github.com/dustin/go-humanize
   version: 9f541cc9db5d55bce703bd99987c9d5cb8eea45e
@@ -25,6 +25,11 @@ imports:
   version: 00c29f56e2386353d58c599509e8dc3801b0d716
 - name: github.com/pelletier/go-toml
   version: 66540cf1fcd2c3aee6f6787dfa32a6ae9a870f12
+- name: github.com/phaus/gitlab-cleaner
+  version: 482a7ba3de792d6e61bfc69b2a6044ff436d14ee
+  subpackages:
+  - cmd
+  - utils
 - name: github.com/rickb777/date
   version: ee30139c88e657c21e64e98ec536029f6fe1f50c
   subpackages:

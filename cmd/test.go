@@ -7,6 +7,7 @@ import (
 
 	"github.com/phaus/gitlab-cleaner/utils"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 
 	"github.com/dustin/go-humanize"
 )
@@ -17,15 +18,16 @@ func init() {
 
 var testCmd = &cobra.Command{
 	Use:   "test",
-	Short: "test the gitlab registry.",
+	Short: "Tests the gitlab registry.",
 	Long:  `This tests a gitlab Registry.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		registries, err := utils.GetRegistry(GetClient())
+		registries, err := GetRegistry(GetClient())
 		if err != nil {
 			log.Fatal(err)
 		}
+		fmt.Printf("\nTESTING %s\n", viper.GetString("RegistryUrl"))
 		for _, registry := range registries {
-			registryTags, err := utils.GetTags(GetClient(), registry)
+			registryTags, err := GetTags(GetClient(), registry)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -40,7 +42,7 @@ var testCmd = &cobra.Command{
 	},
 }
 
-func countTotalSize(registryTags map[time.Time]utils.RegistryTag) uint64 {
+func countTotalSize(registryTags map[string]RegistryTag) uint64 {
 	var count uint64
 	for _, registryTag := range registryTags {
 		count = count + registryTag.TotalSize
@@ -48,8 +50,8 @@ func countTotalSize(registryTags map[time.Time]utils.RegistryTag) uint64 {
 	return count
 }
 
-func calculateDuration(registryTags map[time.Time]utils.RegistryTag) time.Duration {
-	keys := utils.SortedKeys(registryTags)
+func calculateDuration(registryTags map[string]RegistryTag) time.Duration {
+	keys := SortedKeys(registryTags)
 	start := utils.ParseTime(keys[0])
 	end := utils.ParseTime(keys[len(keys)-1])
 	return end.Sub(start)

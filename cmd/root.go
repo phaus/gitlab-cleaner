@@ -35,6 +35,12 @@ type RegistryTag struct {
 	DestroyPath   string `json:"destroy_path"`
 }
 
+// Verbose - do verbose output.
+var Verbose bool
+
+// DryRun - do a dry run - don't change anything.
+var DryRun bool
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "root",
@@ -55,6 +61,8 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
+	rootCmd.PersistentFlags().BoolVarP(&Verbose, "verbose", "v", false, "verbose output")
+	rootCmd.PersistentFlags().BoolVarP(&DryRun, "dry", "d", false, "dry run")
 }
 
 // initConfig reads in config file and ENV variables if set.

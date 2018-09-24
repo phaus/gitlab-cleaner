@@ -9,7 +9,8 @@ RUN cd $GOPATH/src/github.com/phaus/gitlab-cleaner && \
     glide install && \
     go get ./... && \
     go fmt $(go list ./... | grep -v /vendor/) && \
-    go vet $(go list ./... | grep -v /vendor/)
+    go vet $(go list ./... | grep -v /vendor/) && \
+    go test ./...
 
 RUN go build -o /dist/cleaner && upx /dist/cleaner 
 

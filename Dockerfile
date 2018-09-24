@@ -11,7 +11,7 @@ RUN cd $GOPATH/src/github.com/phaus/gitlab-cleaner && \
     go fmt $(go list ./... | grep -v /vendor/) && \
     go vet $(go list ./... | grep -v /vendor/)
 
-RUN go build -o /dist/cleaner 
+RUN go build -o /dist/cleaner && upx /dist/cleaner 
 
 FROM golang:1.11.0-stretch
 
@@ -22,7 +22,8 @@ LABEL maintainer=philipp@haussleiter.de
 RUN mkdir -p /app && \
     apt-get update -y  && apt-get upgrade -y && \
     apt-get autoremove -y && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* && \
+    rm -rf /var/cache/*
 
 COPY --from=0 /dist/cleaner /app/cleaner
 

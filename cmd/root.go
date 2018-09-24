@@ -109,7 +109,11 @@ func GetTags(client *http.Client, registry Registry) (map[string]RegistryTag, er
 	}
 	defer resp.Body.Close()
 
-	fmt.Printf("%d Images on %d pages. Loading Page: ", totalCount, totalPages)
+	fmt.Printf("\n%d %s on %d %s. Loading Page: ",
+		totalCount,
+		ImageLabel(totalCount),
+		totalPages,
+		PageLabel(totalPages))
 
 	var registryTags = make(map[string]RegistryTag)
 	var count = 1
@@ -146,6 +150,22 @@ func parseTags(body []byte, registryTags map[string]RegistryTag) error {
 		registryTags[registryTag.CreatedAt] = registryTag
 	}
 	return nil
+}
+
+// PageLabel returns singular/plural according to count.
+func PageLabel(count int) string {
+	if count > 1 {
+		return "pages"
+	}
+	return "page"
+}
+
+// ImageLabel returns singular/plural according to count.
+func ImageLabel(count int) string {
+	if count > 1 {
+		return "images"
+	}
+	return "image"
 }
 
 // GetRegistry - GETs the (Docker) Registry for a specific project url.

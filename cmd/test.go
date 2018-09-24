@@ -32,12 +32,13 @@ var testCmd = &cobra.Command{
 				log.Fatal(err)
 			}
 			totalSize := countTotalSize(registryTags)
-			fmt.Printf("%d Image have been created %s during %v.\n",
+			fmt.Printf("%d %s, in total of %s created in %v.\n",
 				len(registryTags),
+				ImageLabel(len(registryTags)),
 				humanize.Bytes(totalSize),
 				calculateDuration(registryTags))
 			avgSize := totalSize / uint64(len(registryTags))
-			fmt.Printf("Average image size is %s.\n", humanize.Bytes(avgSize))
+			fmt.Printf("The average image size is %s.\n", humanize.Bytes(avgSize))
 		}
 	},
 }

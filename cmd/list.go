@@ -31,7 +31,7 @@ var listCmd = &cobra.Command{
 			if err != nil {
 				log.Fatal(err)
 			}
-			fmt.Printf("| %4s | %20s | %40s | %11s | %6s | %120s |\n",
+			fmt.Printf("| %4s | %20s | %40s | %11s | %6s | %s\n",
 				"No",
 				"Date",
 				"Name",
@@ -43,7 +43,7 @@ var listCmd = &cobra.Command{
 			for i, k := range keys {
 				tagTime := utils.ParseTime(k)
 				registryTag := registryTags[k]
-				fmt.Printf("| %4d | %20s | %20s | %11s | %6s | DELETE %s%s |\n",
+				fmt.Printf("| %4d | %20s | %20s | %11s | %6s | DELETE %s%s\n",
 					i+1,
 					tagTime.Format("2006-01-02 15:04:05"),
 					registryTag.Name,

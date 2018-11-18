@@ -23,7 +23,7 @@ LABEL maintainer=philipp@haussleiter.de
 
 ADD cert/* /tmp/cert/
 
-RUN apk add --update --no-cache ca-certificates && \
+RUN apk add --update ca-certificates && \
     cp -R /tmp/cert/* /usr/share/ca-certificates/ && \
     update-ca-certificates && \
     rm -rf /var/lib/apt/lists/* && \

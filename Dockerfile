@@ -1,30 +1,31 @@
-FROM phaus/gobelt:latest
+FROM golang:alpine3.8
+RUN apk --update add git openssh upx glide build-base && \
+    rm -rf /var/lib/apt/lists/* && \
+    rm /var/cache/apk/*
 
 RUN mkdir -p $GOPATH/src/github.com/phaus/gitlab-cleaner /dist
 
 WORKDIR $GOPATH/src/github.com/phaus/gitlab-cleaner
 COPY . $GOPATH/src/github.com/phaus/gitlab-cleaner
 
-RUN cd $GOPATH/src/github.com/phaus/gitlab-cleaner && \
-    glide install && \
-    go get ./... && \
-    go fmt $(go list ./... | grep -v /vendor/) && \
-    go vet $(go list ./... | grep -v /vendor/) && \
-    go test ./...
+RUN glide install
+RUN go fmt $(go list ./... | grep -v /vendor/)
+RUN go vet $(go list ./... | grep -v /vendor/)
+RUN go test ./...
 
 RUN go build -o /dist/cleaner && upx /dist/cleaner 
 
-FROM golang:1.11.0-stretch
+FROM alpine:3.8
 
 USER root
 
 LABEL maintainer=philipp@haussleiter.de
 
 RUN mkdir -p /app && \
-    apt-get update -y  && apt-get upgrade -y && \
-    apt-get autoremove -y && \
+    apk update && \
+    apk upgrade && \
     rm -rf /var/lib/apt/lists/* && \
-    rm -rf /var/cache/*
+    rm /var/cache/apk/*
 
 COPY --from=0 /dist/cleaner /app/cleaner
 

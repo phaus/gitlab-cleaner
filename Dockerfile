@@ -21,9 +21,11 @@ USER root
 
 LABEL maintainer=philipp@haussleiter.de
 
-RUN mkdir -p /app && \
-    apk update && \
-    apk upgrade && \
+ADD cert/* /tmp/cert/
+
+RUN apk add --update --no-cache ca-certificates && \
+    cp -R /tmp/cert/* /usr/share/ca-certificates/ && \
+    update-ca-certificates && \
     rm -rf /var/lib/apt/lists/* && \
     rm /var/cache/apk/*
 

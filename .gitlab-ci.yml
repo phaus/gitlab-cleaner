@@ -18,7 +18,7 @@ build_image:
 
 test_image:
   stage: test
-  image: $DOCKER_IMAGE_TAGGED
+  image: "${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}"
   script:
     - cleaner
     - cleaner test

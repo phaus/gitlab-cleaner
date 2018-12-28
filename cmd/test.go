@@ -21,20 +21,21 @@ var testCmd = &cobra.Command{
 	Short: "Tests the gitlab registry.",
 	Long:  `This tests a gitlab Registry.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		registries, err := GetRegistry(GetClient())
+		client := utils.GetClient()
+		registries, err := utils.GetRegistry(client)
 		if err != nil {
 			log.Fatal(err)
 		}
 		fmt.Printf("\nTESTING %s\n", viper.GetString("RegistryUrl"))
 		for _, registry := range registries {
-			registryTags, err := GetTags(GetClient(), registry)
+			registryTags, err := utils.GetTags(client, registry)
 			if err != nil {
 				log.Fatal(err)
 			}
 			totalSize := countTotalSize(registryTags)
 			fmt.Printf("%d %s, in total of %s created in %v.\n",
 				len(registryTags),
-				ImageLabel(len(registryTags)),
+				utils.ImageLabel(len(registryTags)),
 				humanize.Bytes(totalSize),
 				calculateDuration(registryTags))
 			avgSize := totalSize / uint64(len(registryTags))
@@ -43,7 +44,7 @@ var testCmd = &cobra.Command{
 	},
 }
 
-func countTotalSize(registryTags map[string]RegistryTag) uint64 {
+func countTotalSize(registryTags map[string]utils.RegistryTag) uint64 {
 	var count uint64
 	for _, registryTag := range registryTags {
 		count = count + registryTag.TotalSize
@@ -51,8 +52,8 @@ func countTotalSize(registryTags map[string]RegistryTag) uint64 {
 	return count
 }
 
-func calculateDuration(registryTags map[string]RegistryTag) time.Duration {
-	keys := SortedKeys(registryTags)
+func calculateDuration(registryTags map[string]utils.RegistryTag) time.Duration {
+	keys := utils.SortedKeys(registryTags)
 	start := utils.ParseTime(keys[0])
 	end := utils.ParseTime(keys[len(keys)-1])
 	return end.Sub(start)

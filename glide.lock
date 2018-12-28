@@ -26,7 +26,7 @@ imports:
 - name: github.com/pelletier/go-toml
   version: 66540cf1fcd2c3aee6f6787dfa32a6ae9a870f12
 - name: github.com/phaus/gitlab-cleaner
-  version: 52223ab12013c5d2332f1e06c2655fc3c98a942a
+  version: 8535e995e55596d504602a0f51d0dc1f4cd5ccba
   subpackages:
   - cmd
   - utils

@@ -140,6 +140,28 @@ func SortedKeys(registryTags map[string]RegistryTag) []string {
 	return keys
 }
 
+// DeleteTag -  deleting one Tag from the Registry.
+func DeleteTag(client *http.Client, tagDestroyURL string) error {
+	req, err := http.NewRequest("DELETE",
+		tagDestroyURL,
+		nil)
+	SetDefaultHeaders(req)
+	if err != nil {
+		return err
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	respBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+	log.Printf("%s", string(respBody))
+	return nil
+}
+
 func parseTags(body []byte, registryTags map[string]RegistryTag) error {
 	var innerTags []RegistryTag
 	var err = json.Unmarshal(body, &innerTags)

@@ -1,14 +1,13 @@
 FROM golang:alpine3.8
-RUN apk --update add git openssh upx glide build-base && \
+RUN apk --update add git openssh upx build-base && \
     rm -rf /var/lib/apt/lists/* && \
     rm /var/cache/apk/*
 
-RUN mkdir -p $GOPATH/src/github.com/phaus/gitlab-cleaner /dist
+WORKDIR /app
+COPY . /app
 
-WORKDIR $GOPATH/src/github.com/phaus/gitlab-cleaner
-COPY . $GOPATH/src/github.com/phaus/gitlab-cleaner
+RUN mkdir -p /dist
 
-RUN glide install
 RUN go fmt $(go list ./... | grep -v /vendor/)
 RUN go vet $(go list ./... | grep -v /vendor/)
 RUN go test ./...

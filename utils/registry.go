@@ -15,8 +15,10 @@ import (
 // Registry a gitlab Registry info object
 type Registry struct {
 	ID          uint64 `json:"id"`
+	Name        string `json:"name"`
 	Path        string `json:"path"`
 	Location    string `json:"location"`
+	CreatedAt   string `json:"created_at"`
 	TagsPath    string `json:"tags_path"`
 	DestroyPath string `json:"destroy_path"`
 }
@@ -24,7 +26,9 @@ type Registry struct {
 // RegistryTag a tagged image withing the Registry
 type RegistryTag struct {
 	Name          string `json:"name"`
+	Path          string `json:"path"`
 	Location      string `json:"location"`
+	Digest        string `json:"digest"`
 	Revision      string `json:"revision"`
 	ShortRevision string `json:"short_revision"`
 	TotalSize     uint64 `json:"total_size"`

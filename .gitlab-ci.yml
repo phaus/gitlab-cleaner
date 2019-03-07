@@ -24,4 +24,4 @@ test_image:
     - cleaner test
     - cleaner list
   tags:
-    - run.consolving.net  
+    - run.consolving.net
